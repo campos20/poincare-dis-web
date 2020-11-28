@@ -1,4 +1,4 @@
-import drawNavbar from "./src/navbar.js";
+import drawNavbar, { selectedAction } from "./src/navbar.js";
 
 drawNavbar();
 
@@ -14,6 +14,7 @@ canvas.addEventListener(
   "click",
   function (evt) {
     console.log(evt);
+    selectedAction.action(evt.clientX, evt.clientY);
   },
   false
 );
