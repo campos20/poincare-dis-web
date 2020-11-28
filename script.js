@@ -1,3 +1,7 @@
+import drawNavbar from "./src/navbar.js";
+
+drawNavbar();
+
 const canvas = document.querySelector("canvas");
 const ctx = canvas.getContext("2d");
 
@@ -5,6 +9,14 @@ const width = (canvas.width = window.innerWidth);
 const height = (canvas.height = window.innerHeight - 68);
 
 const circleRadius = Math.min(width, height) / 2;
+
+canvas.addEventListener(
+  "click",
+  function (evt) {
+    console.log(evt);
+  },
+  false
+);
 
 function drawMainCircle() {
   ctx.beginPath();

@@ -19,6 +19,12 @@ body {
   border-radius: 5px;
 }
 
-.navbar span:hover {
-  background-color: #ccc;
+.navbar span:hover,
+.selected-item {
+  background-color: #bbb;
+}
+
+.selected-item {
+  border: 2px solid black !important;
+  color: white;
 }
