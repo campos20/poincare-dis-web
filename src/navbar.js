@@ -1,11 +1,21 @@
-import addPoint from "./functions/add.point.js";
+import addPoint from "./function/add.point.js";
+import drawLine from "./function/draw.line.js";
+import select from "./function/select.js";
 
 const SELECTED_ITEM = "selected-item";
 
+class NavItem {
+  constructor(name, icon, action) {
+    this.name = name;
+    this.icon = icon;
+    this.action = action;
+  }
+}
+
 const navItems = [
-  { name: "Select", icon: "fal fa-mouse-pointer" },
-  { name: "Point", icon: "far fa-circle", action: addPoint },
-  { name: "Line", icon: "far fa-horizontal-rule" },
+  new NavItem("Select", "fal fa-mouse-pointer", select),
+  new NavItem("Point", "far fa-circle", addPoint),
+  new NavItem("Line", "far fa-horizontal-rule", drawLine),
 ];
 
 let selectedItem = 0;
