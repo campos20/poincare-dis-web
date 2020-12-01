@@ -5,4 +5,6 @@ export default class Base {
   }
 
   render() {}
+
+  move(x, y) {}
 }

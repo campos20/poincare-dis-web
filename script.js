@@ -11,17 +11,42 @@ const height = (canvas.height = window.innerHeight - 68);
 
 const circleRadius = Math.min(width, height) / 2;
 
-export const objects = [];
-export const selectedObjects = [];
+export const objects = { all: [], selected: [] };
+
+let drag = false;
 
 canvas.addEventListener(
-  "click",
+  "mousedown",
   function (evt) {
-    console.log(evt);
+    evt.preventDefault();
+    evt.stopPropagation();
+
     selectedAction.action(evt.clientX - rect.left, evt.clientY - rect.top);
   },
   false
 );
+
+canvas.addEventListener(
+  "mouseup",
+  function (evt) {
+    evt.preventDefault();
+    evt.stopPropagation();
+
+    console.log(evt);
+    drag = false;
+    objects.selected = [];
+  },
+  false
+);
+
+canvas.addEventListener("mousemove", function (evt) {
+  evt.preventDefault();
+  evt.stopPropagation();
+
+  objects.selected.forEach((object) => {
+    object.move(evt.clientX - rect.left, evt.clientY - rect.top);
+  });
+});
 
 function drawMainCircle() {
   ctx.beginPath();
@@ -36,7 +61,7 @@ function loop() {
 
   drawMainCircle();
 
-  objects.forEach((oject) => oject.render());
+  objects.all.forEach((oject) => oject.render());
 
   requestAnimationFrame(loop);
 }

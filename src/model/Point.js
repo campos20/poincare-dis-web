@@ -15,4 +15,9 @@ export default class Point extends Base {
     ctx.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
     ctx.fill();
   }
+
+  move(x, y) {
+    this.x = x;
+    this.y = y;
+  }
 }
