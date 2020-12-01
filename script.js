@@ -1,4 +1,7 @@
 import drawNavbar, { selectedAction } from "./src/navbar.js";
+import { distance } from "./src/util/point.util.js";
+
+const minDistance = 50;
 
 drawNavbar();
 
@@ -14,6 +17,21 @@ const circleRadius = Math.min(width, height) / 2;
 export const objects = { all: [], selected: [] };
 
 let drag = false;
+let prevX = null;
+let prevY = null;
+
+const offsetX = (x) => x - rect.left;
+const offsetY = (y) => y - rect.top;
+
+function selectObjects(x, y) {
+  for (let i = objects.all.length - 1; i >= 0; i--) {
+    let object = objects.all[i];
+    if (distance(x, y, object.x, object.y) < minDistance) {
+      objects.selected.push(object);
+      break;
+    }
+  }
+}
 
 canvas.addEventListener(
   "mousedown",
@@ -21,7 +39,35 @@ canvas.addEventListener(
     evt.preventDefault();
     evt.stopPropagation();
 
-    selectedAction.action(evt.clientX - rect.left, evt.clientY - rect.top);
+    // We use these to deselect objects
+    let previousSelectedItems = objects.selected.length;
+    let previousCreatedElements = objects.all.length;
+
+    let x = offsetX(evt.clientX);
+    let y = offsetY(evt.clientY);
+
+    prevX = x;
+    prevY = y;
+
+    selectObjects(x, y);
+
+    if (!!selectedAction.action) {
+      selectedAction.action(x, y);
+    }
+
+    if (selectedAction.name === "select") {
+      drag = true;
+    }
+
+    // Selects elements, unless some object were created
+    if (previousCreatedElements !== objects.all.length) {
+      objects.selected.pop();
+    }
+
+    // In case no object were selected, we clear them all
+    if (previousSelectedItems === objects.selected.length) {
+      objects.selected = [];
+    }
   },
   false
 );
@@ -32,9 +78,7 @@ canvas.addEventListener(
     evt.preventDefault();
     evt.stopPropagation();
 
-    console.log(evt);
     drag = false;
-    objects.selected = [];
   },
   false
 );
@@ -43,9 +87,20 @@ canvas.addEventListener("mousemove", function (evt) {
   evt.preventDefault();
   evt.stopPropagation();
 
-  objects.selected.forEach((object) => {
-    object.move(evt.clientX - rect.left, evt.clientY - rect.top);
-  });
+  if (drag) {
+    let x = offsetX(evt.clientX);
+    let y = offsetY(evt.clientY);
+
+    let dx = x - prevX;
+    let dy = y - prevY;
+
+    prevX = x;
+    prevY = y;
+
+    objects.selected.forEach((object) => {
+      object.move(dx, dy);
+    });
+  }
 });
 
 function drawMainCircle() {
@@ -61,6 +116,12 @@ function loop() {
 
   drawMainCircle();
 
+  objects.selected.forEach((object) => {
+    ctx.beginPath();
+    ctx.fillStyle = "red";
+    ctx.arc(object.x, object.y, object.size + 5, 0, 2 * Math.PI);
+    ctx.fill();
+  });
   objects.all.forEach((oject) => oject.render());
 
   requestAnimationFrame(loop);

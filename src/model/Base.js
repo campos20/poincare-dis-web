@@ -6,5 +6,5 @@ export default class Base {
 
   render() {}
 
-  move(x, y) {}
+  move(dx, dy) {}
 }

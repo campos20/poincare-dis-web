@@ -1,12 +1,14 @@
 import Base from "./Base.js";
 import { ctx } from "../../script.js";
 
+const getRandom = () => Math.floor(Math.random() * 255);
+
 export default class Point extends Base {
   constructor(x, y) {
     let size = 20;
     super(x, y);
     this.size = size;
-    this.color = "rgb(0, 0, 0)";
+    this.color = `rgb(${getRandom()}, ${getRandom()}, ${getRandom()})`;
   }
 
   render() {
@@ -16,8 +18,8 @@ export default class Point extends Base {
     ctx.fill();
   }
 
-  move(x, y) {
-    this.x = x;
-    this.y = y;
+  move(dx, dy) {
+    this.x += dx;
+    this.y += dy;
   }
 }
